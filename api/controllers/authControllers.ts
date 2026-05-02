@@ -1,8 +1,8 @@
-class authControllers {
-  adminLogin = async(req, res) => {
+class AuthControllers {
+  adminLogin = async (req: any, res: any) => {
     const { email, password } = req.body;
     console.log('Admin login attempt:', { email, password });
-  }
+  };
 }
 
-module.exports = new authControllers();
+export default new AuthControllers();
