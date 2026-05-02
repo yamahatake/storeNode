@@ -1,6 +1,7 @@
 import { createRouter, createRoute, createRootRouteWithContext, redirect, Outlet } from '@tanstack/react-router';
 import type { User } from '@/types';
 import LoginPage from '@/views/LoginPage';
+import AdminLoginPage from '@/views/AdminLoginPage';
 import RegisterPage from '@/views/RegisterPage';
 import StorePage from '@/views/StorePage';
 
@@ -47,7 +48,22 @@ const storeRoute = createRoute({
   component: StorePage,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, loginRoute, registerRoute, storeRoute]);
+const adminLoginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/login',
+  beforeLoad: ({ context }) => {
+    if (context.user) throw redirect({ to: '/store' });
+  },
+  component: AdminLoginPage,
+});
+
+const routeTree = rootRoute.addChildren([
+  indexRoute, 
+  loginRoute, 
+  adminLoginRoute,
+  registerRoute, 
+  storeRoute
+]);
 
 export const router = createRouter({
   routeTree,
