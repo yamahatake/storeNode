@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import type { User } from '@/types';
-import apiClient from '@/api/api';
+import apiClient from '@/api';
 interface AuthState {
   user: User | null;
   successMessage: string;
@@ -8,30 +8,15 @@ interface AuthState {
   loading: boolean;
 }
 
-const DEMO_USER = { id: '1', name: 'Alex Johnson' };
-
-export const adminLogin = createAsyncThunk('auth/adminLogin', async (credentials: { email: string; password: string }) => {
-  console.log(credentials)
+export const adminLogin = createAsyncThunk('adminLogin', async (credentials: { email: string; password: string }) => {
   try {
     const data = await apiClient.post('/auth/admin-login', credentials,{ withCredentials: true});
-    if (!data.user) throw new Error('Invalid credentials. Password must be at least 4 characters.');
-    console.log(data)
-    return data.user;
+    if (!data) throw new Error('Invalid credentials. Password must be at least 4 characters.');
+    return data;
   } catch (error) {
     throw error instanceof Error ? error.message : 'An unknown error occurred';
   }
 });
-
-export function validateLogin(email: string, password: string): User | null {
-  if (email && password.length >= 4) return { ...DEMO_USER, email };
-  return null;
-}
-
-export function validateRegister(name: string, email: string, password: string): User | null {
-  if (name.trim() && email && password.length >= 4)
-    return { id: Date.now().toString(), name: name.trim(), email };
-  return null;
-}
 
 const authReducer = createSlice({
   name: 'auth',

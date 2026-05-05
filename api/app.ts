@@ -6,11 +6,13 @@ import logger from 'morgan';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
 
 import indexRouter from './routes/index';
 import usersRouter from './routes/users';
 import authRouter from './routes/authRoutes';
+import { connectDB } from './utils/db';
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -24,6 +26,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
+app.use(cors({
+  origin: [process.env.APP_BASE_URL],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}))
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -41,10 +49,7 @@ app.use(function (err: any, req: any, res: any, next: any) {
 });
 
 app.listen(port, async () => {
-  await mongoose
-    .connect('mongodb://127.0.0.1:27017/test')
-    .then(() => console.log('Connected to MongoDB on port ' + port))
-    .catch((err) => console.error('Error connecting to MongoDB', err));
+  await connectDB()
 });
 
 export default app;

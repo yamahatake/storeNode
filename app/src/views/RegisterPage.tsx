@@ -1,39 +1,16 @@
 import { useState } from 'react';
-import { Link, useNavigate } from '@tanstack/react-router';
-import { useMutation } from '@tanstack/react-query';
-import { useAppDispatch } from '@/store/hooks';
-import { setUser, validateRegister } from '@/store/Reducers/authReducer';
+import { Link } from '@tanstack/react-router';
 
 export default function RegisterPage() {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [confirmError, setConfirmError] = useState('');
 
-  const mutation = useMutation({
-    mutationFn: async (data: { name: string; email: string; password: string }) => {
-      await new Promise(r => setTimeout(r, 600));
-      const user = validateRegister(data.name, data.email, data.password);
-      if (!user) throw new Error('Registration failed. Password must be at least 4 characters.');
-      dispatch(setUser(user));
-    },
-    onSuccess: () => navigate({ to: '/store' }),
-  });
 
   function handleSubmit(e: { preventDefault(): void }) {
     e.preventDefault();
-    setConfirmError('');
-    if (password !== confirmPassword) {
-      setConfirmError('Passwords do not match.');
-      return;
-    }
-    mutation.mutate({ name, email, password });
   }
-
-  const error = confirmError || mutation.error?.message;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-violet-50 via-white to-indigo-50 flex items-center justify-center p-4">
@@ -111,32 +88,10 @@ export default function RegisterPage() {
               />
             </div>
 
-            {error && (
-              <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600 flex items-center gap-2">
-                <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-                {error}
-              </div>
-            )}
-
             <button
               type="submit"
-              disabled={mutation.isPending}
               className="w-full bg-violet-600 hover:bg-violet-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm"
-            >
-              {mutation.isPending ? (
-                <>
-                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  Creating account...
-                </>
-              ) : (
-                'Create account'
-              )}
-            </button>
+            >Create account</button>
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-6">
