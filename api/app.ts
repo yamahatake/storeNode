@@ -10,7 +10,7 @@ import cors from 'cors';
 dotenv.config();
 
 import indexRouter from './routes/index';
-import usersRouter from './routes/users';
+import usersRouter from './routes/usersRoutes';
 import authRouter from './routes/authRoutes';
 import { connectDB } from './utils/db';
 

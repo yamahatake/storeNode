@@ -35,7 +35,7 @@ export default function ChatWidget() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  function sendMessage(e: FormEvent) {
+  function sendMessage(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const text = input.trim();
     if (!text) return;

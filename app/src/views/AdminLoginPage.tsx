@@ -1,18 +1,30 @@
-import { useState } from 'react';
-import { Link } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { useAppDispatch } from '@/store/hooks';
 import { adminLogin } from '@/store/Reducers/authReducer';
+import { CircleLoader } from 'react-spinners'
+import { useSelector } from 'react-redux';
+import type { User } from '@/types';
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const {loading, user} = useSelector((state: { auth: { loading: boolean, user: User } }) => state.auth);
 
   function handleSubmit(e: { preventDefault(): void }) {
     e.preventDefault();
     dispatch(adminLogin({ email, password }));
   }
+
+  useEffect(() => {
+    if (user) {
+      console.log('Logged in user:', user);
+      // Redirect to admin dashboard or home page after successful login
+      navigate({ to: '/store' });
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-violet-50 via-white to-indigo-50 flex items-center justify-center p-4">
@@ -69,9 +81,10 @@ export default function LoginPage() {
 
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-violet-600 hover:bg-violet-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm"
             >
-              'Sign in'
+              {loading ? <CircleLoader color="#fff" size={20} /> : 'Sign In'}
             </button>
           </form>
 
