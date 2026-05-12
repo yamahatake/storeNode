@@ -1,12 +1,24 @@
 import { useState } from 'react';
-import { Link } from '@tanstack/react-router';
+import { useFormStatus } from "react-dom";
+import { Link, useNavigate } from '@tanstack/react-router';
+import { useAppDispatch } from '@/store/hooks';
+import { userLogin } from '@/store/Reducers/authReducer';
+import { CircleLoader } from 'react-spinners'
 
 export default function LoginPage() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const formStatus = useFormStatus();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  function handleSubmit(e: { preventDefault(): void }) {
+  async function handleSubmit(e: { preventDefault(): void }) {
     e.preventDefault();
+    const loginAction = await dispatch(userLogin({ email, password }));
+
+    if (userLogin.fulfilled.match(loginAction)) {
+      navigate({ to: '/store' });
+    }
   }
 
   return (
@@ -64,9 +76,10 @@ export default function LoginPage() {
 
             <button
               type="submit"
+              disabled={formStatus.pending}
               className="w-full bg-violet-600 hover:bg-violet-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm"
             >
-              'Sign in'
+              {formStatus.pending ? <CircleLoader color="#fff" size={20} /> : 'Sign In'}
             </button>
           </form>
 

@@ -8,8 +8,8 @@ interface AuthState {
   loading: boolean;
 }
 
-export const adminLogin = createAsyncThunk('adminLogin', async (credentials: { email: string; password: string }, {rejectWithValue, fulfillWithValue}) => {
-  return apiClient.post('/auth/admin-login', credentials,{ withCredentials: true}).then(res => {
+export const userLogin = createAsyncThunk('userLogin', async (credentials: { email: string; password: string }, {rejectWithValue, fulfillWithValue}) => {
+  return apiClient.post('/auth/login', credentials,{ withCredentials: true}).then(res => {
     toast.success('Login successful!');
     fulfillWithValue(res.data);
     return res.data;
@@ -17,6 +17,18 @@ export const adminLogin = createAsyncThunk('adminLogin', async (credentials: { e
     console.log(err.response);
     toast.error(err.response?.data?.error || 'Login failed. Please try again.');
     rejectWithValue(err.response?.data?.error || 'Login failed. Please try again.');
+  });
+});
+
+export const userRegistration = createAsyncThunk('userRegistration', async (credentials: { name: string, email: string; password: string }, {rejectWithValue, fulfillWithValue}) => {
+  return apiClient.post('/auth/register', credentials,{ withCredentials: true}).then(res => {
+    toast.success('Registration successful!');
+    fulfillWithValue(res.data);
+    return res.data;
+  }).catch(err => {
+    console.log(err.response);
+    toast.error(err.response?.data?.error || 'Registration failed. Please try again.');
+    rejectWithValue(err.response?.data?.error || 'Registration failed. Please try again.');
   });
 });
 
@@ -36,13 +48,13 @@ const authReducer = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(adminLogin.pending, (state) => {
+      .addCase(userLogin.pending || userRegistration.pending, (state) => {
         state.loading = true;
       })
-      .addCase(adminLogin.rejected, (state) => {
+      .addCase(userLogin.rejected || userRegistration.rejected, (state) => {
         state.loading = false;
       })
-      .addCase(adminLogin.fulfilled, (state, action: PayloadAction) => {
+      .addCase(userLogin.fulfilled || userRegistration.fulfilled, (state, action: PayloadAction) => {
         state.loading = false;
         state.user = action.payload ?? null;
       });

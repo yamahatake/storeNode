@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "PowerShell(Get-ChildItem \"d:\\\\Projects\\\\nodeTest\" -Recurse -Depth 2 | Select-Object FullName, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\){\"Dir\"} else {\"File\"}}})"
     ]
   }
 }

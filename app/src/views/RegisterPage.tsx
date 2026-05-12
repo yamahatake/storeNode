@@ -1,15 +1,26 @@
 import { useState } from 'react';
-import { Link } from '@tanstack/react-router';
+import { useFormStatus } from "react-dom";
+import { Link, useNavigate } from '@tanstack/react-router';
+import { userRegistration } from '@/store/Reducers/authReducer';
+import { useAppDispatch } from '@/store/hooks';
+import { CircleLoader } from 'react-spinners'
 
 export default function RegisterPage() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const formStatus = useFormStatus();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-
-  function handleSubmit(e: { preventDefault(): void }) {
+  async function handleSubmit(e: { preventDefault(): void }) {
     e.preventDefault();
+    const registerAction = await dispatch(userRegistration({ name, email, password }));
+
+    if (userRegistration.fulfilled.match(registerAction)) {
+      navigate({ to: '/login' });
+    }
   }
 
   return (
@@ -90,8 +101,11 @@ export default function RegisterPage() {
 
             <button
               type="submit"
+              disabled={formStatus.pending}
               className="w-full bg-violet-600 hover:bg-violet-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm"
-            >Create account</button>
+            >
+              {formStatus.pending ? <CircleLoader color="#fff" size={20} /> : 'Create account'}
+            </button>
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-6">

@@ -2,7 +2,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  avatar?: string;
+  profile_picture?: string;
+  role: 'user' | 'admin';
 }
 
 export interface Product {

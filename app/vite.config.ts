@@ -4,13 +4,9 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
-// https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
-    tanstackRouter({
-      target: 'react',
-      autoCodeSplitting: true,
-    }),
+    ...(mode !== 'test' ? [tanstackRouter({ target: 'react', autoCodeSplitting: true })] : []),
     react(),
     tailwindcss(),
   ],
@@ -19,4 +15,12 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-})
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './src/__tests__/setup.ts',
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+}))
