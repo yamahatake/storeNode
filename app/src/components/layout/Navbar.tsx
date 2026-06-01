@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { selectUser, logout } from '@/store/Reducers/authReducer';
+import { selectCurrentUser, logout } from '@/store/Reducers/authReducer';
 import { selectCartCount } from '@/store/Reducers/cartReducer';
 import { setIsCartOpen, setIsChatOpen } from '@/store/Reducers/uiReducer';
 
@@ -13,7 +13,7 @@ interface NavbarProps {
 export default function Navbar({ search, onSearch }: NavbarProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const user = useAppSelector(selectUser);
+  const user = useAppSelector(selectCurrentUser);
   const cartCount = useAppSelector(selectCartCount);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 

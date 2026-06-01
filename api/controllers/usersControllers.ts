@@ -5,7 +5,7 @@ class UsersControllers {
     const { email } = req.body;
     try {
       const findUser = await userModel.findOne({ email });
-      return findUser
+      return res.status(200).send(findUser);
     } catch (error) {
       console.error('Error during user search:', error);
       res.status(500).send({ error: 'Internal server error' });
@@ -14,8 +14,8 @@ class UsersControllers {
   getUsers = async (req: any, res: any) => {
     const { email } = req.body;
     try {
-      const findUser = await userModel.findOne({ email });
-      return findUser
+      const findUsers = await userModel.find({ email });
+      return res.status(200).send(findUsers)
     } catch (error) {
       console.error('Error during user search:', error);
       res.status(500).send({ error: 'Internal server error' });

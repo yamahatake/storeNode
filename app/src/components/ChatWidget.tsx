@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { selectUser } from '@/store/Reducers/authReducer';
+import { selectCurrentUser } from '@/store/Reducers/authReducer';
 import { selectIsChatOpen, setIsChatOpen } from '@/store/Reducers/uiReducer';
 import type { ChatMessage } from '@/types';
 
@@ -22,7 +22,7 @@ function makeMessage(content: string, sender: 'user' | 'support'): ChatMessage {
 
 export default function ChatWidget() {
   const dispatch = useAppDispatch();
-  const user = useAppSelector(selectUser);
+  const user = useAppSelector(selectCurrentUser);
   const isChatOpen = useAppSelector(selectIsChatOpen);
   const [messages, setMessages] = useState<ChatMessage[]>([
     makeMessage("Hi! I'm here to help. What can I assist you with today?", 'support'),

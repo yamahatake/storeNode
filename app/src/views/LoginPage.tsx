@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useFormStatus } from "react-dom";
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useAppDispatch } from '@/store/hooks';
-import { userLogin } from '@/store/Reducers/authReducer';
+import { userLoginThunk } from '@/store/Reducers/authReducer';
 import { CircleLoader } from 'react-spinners'
 
 export default function LoginPage() {
@@ -14,9 +14,9 @@ export default function LoginPage() {
 
   async function handleSubmit(e: { preventDefault(): void }) {
     e.preventDefault();
-    const loginAction = await dispatch(userLogin({ email, password }));
+    const loginAction = await dispatch(userLoginThunk({ email, password }));
 
-    if (userLogin.fulfilled.match(loginAction)) {
+    if (userLoginThunk.fulfilled.match(loginAction)) {
       navigate({ to: '/store' });
     }
   }

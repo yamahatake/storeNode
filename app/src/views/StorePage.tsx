@@ -1,51 +1,22 @@
-import { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
-import Sidebar from '@/components/Sidebar';
 import ProductCard from '@/components/ProductCard';
 import CartSidebar from '@/components/CartSidebar';
 import ChatWidget from '@/components/ChatWidget';
-import { CATEGORIES } from '@/data/products';
-import { fetchProducts } from '@/api/products';
-
-const SORT_OPTIONS = [
-  { value: 'featured', label: 'Featured' },
-  { value: 'price-asc', label: 'Price: Low to High' },
-  { value: 'price-desc', label: 'Price: High to Low' },
-  { value: 'rating', label: 'Top Rated' },
-  { value: 'reviews', label: 'Most Reviewed' },
-];
+import { getProducts } from '@/api/products';
+import type { Product } from '@/types';
 
 export default function StorePage() {
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('All');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 9999]);
-  const [onlyInStock, setOnlyInStock] = useState(false);
-  const [sort, setSort] = useState('featured');
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
 
-  const { data: allProducts = [], isLoading } = useQuery({
-    queryKey: ['products'],
-    queryFn: fetchProducts,
-  });
-
-  const filtered = useMemo(() => {
-    let items = allProducts;
-    if (category !== 'All') items = items.filter(p => p.category === category);
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      items = items.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
-    }
-    items = items.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1]);
-    if (onlyInStock) items = items.filter(p => p.inStock);
-
-    return [...items].sort((a, b) => {
-      if (sort === 'price-asc') return a.price - b.price;
-      if (sort === 'price-desc') return b.price - a.price;
-      if (sort === 'rating') return b.rating - a.rating;
-      if (sort === 'reviews') return b.reviews - a.reviews;
-      return 0;
+  useState(() => {
+    getProducts().then(products => {
+      setAllProducts(products);
+    }).catch(err => {
+      console.error('Failed to fetch products:', err);
     });
-  }, [allProducts, search, category, priceRange, onlyInStock, sort]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -65,76 +36,22 @@ export default function StorePage() {
         </div>
       </div>
 
-      {/* Mobile category bar */}
-      <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-2 overflow-x-auto flex gap-2">
-        {CATEGORIES.map(cat => (
-          <button
-            key={cat}
-            type="button"
-            onClick={() => setCategory(cat)}
-            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition ${
-              category === cat ? 'bg-violet-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex gap-8">
-          {/* Sidebar */}
-          <Sidebar
-            selected={category}
-            onSelect={setCategory}
-            priceRange={priceRange}
-            onPriceRange={setPriceRange}
-            onlyInStock={onlyInStock}
-            onToggleStock={() => setOnlyInStock(v => !v)}
-          />
-
           {/* Main content */}
           <div className="flex-1 min-w-0">
             {/* Toolbar */}
             <div className="flex items-center justify-between gap-4 mb-6">
               <p className="text-sm text-gray-500">
-                <span className="font-semibold text-gray-900">{filtered.length}</span> products
-                {category !== 'All' && <> in <span className="font-semibold text-violet-600">{category}</span></>}
+                <span className="font-semibold text-gray-900">{allProducts.length}</span> products
                 {search && <> matching "<span className="font-semibold">{search}</span>"</>}
               </p>
-              <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-500 hidden sm:block">Sort:</label>
-                <select
-                  value={sort}
-                  onChange={e => setSort(e.target.value)}
-                  title="Sort products"
-                  aria-label="Sort products"
-                  className="text-sm border border-gray-200 rounded-xl px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-500"
-                >
-                  {SORT_OPTIONS.map(o => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
-                  ))}
-                </select>
-              </div>
             </div>
 
             {/* Products grid */}
-            {isLoading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="bg-white rounded-2xl border border-gray-200 overflow-hidden animate-pulse">
-                    <div className="aspect-square bg-gray-200" />
-                    <div className="p-4 space-y-2">
-                      <div className="h-3 bg-gray-200 rounded w-1/3" />
-                      <div className="h-4 bg-gray-200 rounded w-3/4" />
-                      <div className="h-3 bg-gray-200 rounded w-1/2" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : filtered.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filtered.map(p => (
+            {allProducts.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+                {allProducts.map(p => (
                   <ProductCard key={p.id} product={p} />
                 ))}
               </div>
@@ -147,13 +64,6 @@ export default function StorePage() {
                 </div>
                 <p className="text-gray-700 font-semibold">No products found</p>
                 <p className="text-gray-400 text-sm">Try adjusting your search or filters</p>
-                <button
-                  type="button"
-                  onClick={() => { setSearch(''); setCategory('All'); setPriceRange([0, 9999]); setOnlyInStock(false); }}
-                  className="text-sm text-violet-600 hover:text-violet-700 font-medium"
-                >
-                  Clear all filters
-                </button>
               </div>
             )}
           </div>

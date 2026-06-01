@@ -1,7 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-
 import authRouter from '../../routes/authRoutes';
 import usersRouter from '../../routes/usersRoutes';
 

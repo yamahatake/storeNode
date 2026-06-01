@@ -1,66 +1,66 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import type { User } from '@/types';
-import apiClient from '@/api';
 import toast from 'react-hot-toast';
+import { userLogin, userRegistration } from '@/api/auth';
 
 interface AuthState {
-  user: User | null;
+  currentUser: User | null;
   loading: boolean;
 }
 
-export const userLogin = createAsyncThunk('userLogin', async (credentials: { email: string; password: string }, {rejectWithValue, fulfillWithValue}) => {
-  return apiClient.post('/auth/login', credentials,{ withCredentials: true}).then(res => {
+export const userLoginThunk = createAsyncThunk('userLogin', async (credentials: { email: string; password: string }, {rejectWithValue, fulfillWithValue}) => {
+  return userLogin(credentials).then(res => {
     toast.success('Login successful!');
-    fulfillWithValue(res.data);
-    return res.data;
+    fulfillWithValue(res);
+    return res;
   }).catch(err => {
     console.log(err.response);
-    toast.error(err.response?.data?.error || 'Login failed. Please try again.');
-    rejectWithValue(err.response?.data?.error || 'Login failed. Please try again.');
+    toast.error(err.response?.error || 'Login failed. Please try again.');
+    rejectWithValue(err.response?.error || 'Login failed. Please try again.');
   });
 });
 
-export const userRegistration = createAsyncThunk('userRegistration', async (credentials: { name: string, email: string; password: string }, {rejectWithValue, fulfillWithValue}) => {
-  return apiClient.post('/auth/register', credentials,{ withCredentials: true}).then(res => {
+export const userRegistrationThunk = createAsyncThunk('userRegistration', async (credentials: { name: string, email: string; password: string }, {rejectWithValue, fulfillWithValue}) => {
+  return userRegistration(credentials).then(res => {
     toast.success('Registration successful!');
-    fulfillWithValue(res.data);
-    return res.data;
+    fulfillWithValue(res);
+    return res;
   }).catch(err => {
     console.log(err.response);
-    toast.error(err.response?.data?.error || 'Registration failed. Please try again.');
-    rejectWithValue(err.response?.data?.error || 'Registration failed. Please try again.');
+    toast.error(err.response?.error || 'Registration failed. Please try again.');
+    rejectWithValue(err.response?.error || 'Registration failed. Please try again.');
   });
 });
 
 const authReducer = createSlice({
   name: 'auth',
   initialState: { 
-    user: null,
+    currentUser: null,
     loading: false
   } as AuthState,
   reducers: {
     setUser: (state, action: PayloadAction) => {
-      state.user = action.payload ?? null;
+      state.currentUser = action.payload ?? null;
     },
     logout: (state) => {
-      state.user = null;
+      state.currentUser = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(userLogin.pending || userRegistration.pending, (state) => {
+      .addCase(userLoginThunk.pending || userRegistrationThunk.pending, (state) => {
         state.loading = true;
       })
-      .addCase(userLogin.rejected || userRegistration.rejected, (state) => {
+      .addCase(userLoginThunk.rejected || userRegistrationThunk.rejected, (state) => {
         state.loading = false;
       })
-      .addCase(userLogin.fulfilled || userRegistration.fulfilled, (state, action: PayloadAction) => {
+      .addCase(userLoginThunk.fulfilled || userRegistrationThunk.fulfilled, (state, action: PayloadAction) => {
         state.loading = false;
-        state.user = action.payload ?? null;
+        state.currentUser = action.payload ?? null;
       });
   }
 });
 
 export const { setUser, logout } = authReducer.actions;
-export const selectUser = (state: { auth: AuthState }) => state.auth.user;
+export const selectCurrentUser = (state: { auth: AuthState }) => state.auth.currentUser;
 export default authReducer.reducer;

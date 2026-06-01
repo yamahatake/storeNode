@@ -12,6 +12,7 @@ dotenv.config();
 import indexRouter from './routes/index';
 import usersRouter from './routes/usersRoutes';
 import authRouter from './routes/authRoutes';
+import productsRouter from './routes/productsRoutes';
 import { connectDB } from './utils/db';
 
 const port = process.env.PORT || 5000;
@@ -34,8 +35,9 @@ app.use(cors({
 }))
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/', usersRouter);
+app.use('/', productsRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));

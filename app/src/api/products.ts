@@ -1,7 +1,10 @@
 import type { Product } from '@/types';
-import { PRODUCTS } from '@/data/products';
+import apiClient from './index';
 
-export async function fetchProducts(): Promise<Product[]> {
-  await new Promise(r => setTimeout(r, 400));
-  return PRODUCTS;
+export async function getProducts(): Promise<Product[]> {
+  const response = await apiClient.get('/products');
+  if (!response || response.status !== 200) {
+    throw new Error('Failed to get products');
+  }
+  return response.data;
 }

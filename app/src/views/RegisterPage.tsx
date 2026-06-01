@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useFormStatus } from "react-dom";
 import { Link, useNavigate } from '@tanstack/react-router';
-import { userRegistration } from '@/store/Reducers/authReducer';
+import { userRegistrationThunk } from '@/store/Reducers/authReducer';
 import { useAppDispatch } from '@/store/hooks';
 import { CircleLoader } from 'react-spinners'
 
@@ -16,9 +16,9 @@ export default function RegisterPage() {
 
   async function handleSubmit(e: { preventDefault(): void }) {
     e.preventDefault();
-    const registerAction = await dispatch(userRegistration({ name, email, password }));
+    const registerAction = await dispatch(userRegistrationThunk({ name, email, password }));
 
-    if (userRegistration.fulfilled.match(registerAction)) {
+    if (userRegistrationThunk.fulfilled.match(registerAction)) {
       navigate({ to: '/login' });
     }
   }

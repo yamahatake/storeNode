@@ -4,11 +4,11 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "strict": false,
+    "strict": true,
     "outDir": "dist",
     "rootDir": ".",
     "skipLibCheck": true
   },
-  "include": ["./**/*.ts"],
+  "include": ["./**/*.ts", "app.js"],
   "exclude": ["node_modules", "dist"]
 }
