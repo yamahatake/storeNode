@@ -1,7 +1,7 @@
 import { RouterProvider } from '@tanstack/react-router';
 import { useAppSelector } from '@/store/hooks';
 import { selectCurrentUser } from '@/store/Reducers/authReducer';
-import { router } from '@/router';
+import { router } from '@/routes';
 import './App.css';
 
 export default function App() {

@@ -1,12 +1,8 @@
 import { createRouter, createRoute, createRootRouteWithContext, redirect, Outlet } from '@tanstack/react-router';
-import type { User } from '@/types';
+import type { RouterContext  } from '@/types';
 import LoginPage from '@/views/LoginPage';
 import RegisterPage from '@/views/RegisterPage';
 import StorePage from '@/views/StorePage';
-
-interface RouterContext {
-  user: User | null;
-}
 
 const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: () => <Outlet />,

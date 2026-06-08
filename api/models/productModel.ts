@@ -9,8 +9,6 @@ const productSchema = new Schema({
 	thumbnail: { type: String, default: '' },
 	discount: { type: Number, default: 0 },
 	cupom_code: { type: String, default: '' },
-	rating: { type: Number, default: 0 },
-	reviews: { type: [{ user: String, comment: String, rating: Number }], default: [] },
 	seller: { type: Schema.Types.ObjectId, ref: 'users', required: true },
 	freight: { type: Number, default: 0 },
 	stock: { type: Number, default: 0 },

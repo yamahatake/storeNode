@@ -30,3 +30,7 @@ export interface ChatMessage {
   sender: 'user' | 'support';
   timestamp: Date;
 }
+
+export interface RouterContext {
+  user: User | null;
+}

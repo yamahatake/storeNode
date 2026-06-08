@@ -6,7 +6,7 @@ import ChatWidget from '@/components/ChatWidget';
 import { getProducts } from '@/api/products';
 import type { Product } from '@/types';
 
-export default function StorePage() {
+const StorePage = () => {
   const [search, setSearch] = useState('');
   const [allProducts, setAllProducts] = useState<Product[]>([]);
 
@@ -75,3 +75,5 @@ export default function StorePage() {
     </div>
   );
 }
+
+export default StorePage;

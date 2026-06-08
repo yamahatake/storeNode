@@ -5,7 +5,7 @@ import { userRegistrationThunk } from '@/store/Reducers/authReducer';
 import { useAppDispatch } from '@/store/hooks';
 import { CircleLoader } from 'react-spinners'
 
-export default function RegisterPage() {
+const RegisterPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const formStatus = useFormStatus();
@@ -123,3 +123,5 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+export default RegisterPage;

@@ -5,7 +5,7 @@ import { useAppDispatch } from '@/store/hooks';
 import { userLoginThunk } from '@/store/Reducers/authReducer';
 import { CircleLoader } from 'react-spinners'
 
-export default function LoginPage() {
+const LoginPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const formStatus = useFormStatus();
@@ -123,3 +123,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export default LoginPage;
