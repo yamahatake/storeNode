@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useFormStatus } from "react-dom";
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, createFileRoute, redirect } from '@tanstack/react-router';
 import { useAppDispatch } from '@/store/hooks';
 import { userLoginThunk } from '@/store/Reducers/authReducer';
 import { CircleLoader } from 'react-spinners'
 
-const LoginPage = () => {
+const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const formStatus = useFormStatus();
@@ -17,7 +17,7 @@ const LoginPage = () => {
     const loginAction = await dispatch(userLoginThunk({ email, password }));
 
     if (userLoginThunk.fulfilled.match(loginAction)) {
-      navigate({ to: '/store' });
+      navigate({ to: '/' });
     }
   }
 
@@ -124,4 +124,11 @@ const LoginPage = () => {
   );
 }
 
-export default LoginPage;
+export const Route = createFileRoute('/login')({
+  beforeLoad: ({ context }) => {
+    if (context.user) throw redirect({ to: '/' });
+  },
+  component: Login,
+})
+
+export default Login;

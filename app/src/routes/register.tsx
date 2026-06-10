@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useFormStatus } from "react-dom";
-import { Link, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router';
 import { userRegistrationThunk } from '@/store/Reducers/authReducer';
 import { useAppDispatch } from '@/store/hooks';
 import { CircleLoader } from 'react-spinners'
 
-const RegisterPage = () => {
+const Register = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const formStatus = useFormStatus();
@@ -124,4 +124,11 @@ const RegisterPage = () => {
   );
 }
 
-export default RegisterPage;
+export const Route = createFileRoute('/register')({
+  beforeLoad: ({ context }) => {
+    if (context.user) throw redirect({ to: '/store' });
+  },
+  component: Register,
+})
+
+export default Register;

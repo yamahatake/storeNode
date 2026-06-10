@@ -4,9 +4,12 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig(() => ({
   plugins: [
-    ...(mode !== 'test' ? [tanstackRouter({ target: 'react', autoCodeSplitting: true })] : []),
+    tanstackRouter({
+      target: 'react',
+      autoCodeSplitting: true,
+    }),
     react(),
     tailwindcss(),
   ],

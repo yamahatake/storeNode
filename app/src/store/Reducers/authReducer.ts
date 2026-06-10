@@ -11,6 +11,7 @@ interface AuthState {
 export const userLoginThunk = createAsyncThunk('userLogin', async (credentials: { email: string; password: string }, {rejectWithValue, fulfillWithValue}) => {
   return userLogin(credentials).then(res => {
     toast.success('Login successful!');
+    localStorage.setItem('currentUser', JSON.stringify(res));
     fulfillWithValue(res);
     return res;
   }).catch(err => {
@@ -35,7 +36,7 @@ export const userRegistrationThunk = createAsyncThunk('userRegistration', async 
 const authReducer = createSlice({
   name: 'auth',
   initialState: { 
-    currentUser: null,
+    currentUser: localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')!) : null,
     loading: false
   } as AuthState,
   reducers: {
@@ -44,6 +45,8 @@ const authReducer = createSlice({
     },
     logout: (state) => {
       state.currentUser = null;
+      sessionStorage.removeItem('currentUser');
+      toast.success('Logged out successfully!');
     },
   },
   extraReducers: (builder) => {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectCurrentUser, logout } from '@/store/Reducers/authReducer';
 import { selectCartCount } from '@/store/Reducers/cartReducer';
@@ -17,18 +17,27 @@ export default function Navbar({ search, onSearch }: NavbarProps) {
   const cartCount = useAppSelector(selectCartCount);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
+  const navigationList = [
+    { name: 'My Orders', href: '/orders' },
+    { name: 'My Wishlist', href: '/wishlist' },
+    { name: 'My Categories', href: '/categories' },
+    { name: 'My Products', href: '/products' },
+  ];
+
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 h-16">
           {/* Logo */}
           <div className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
-            </div>
-            <span className="text-xl font-bold text-gray-900 hidden sm:block">ShopVerse</span>
+            <Link to="/" className="w-full h-full flex items-center justify-center">
+              <span className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+              </span>
+              <span className="text-xl font-bold text-gray-900 hidden sm:block">ShopVerse</span>
+            </Link>
           </div>
 
           {/* Search */}
@@ -99,9 +108,9 @@ export default function Navbar({ search, onSearch }: NavbarProps) {
                     <p className="text-sm font-semibold text-gray-900">{user?.name}</p>
                     <p className="text-xs text-gray-500">{user?.email}</p>
                   </div>
-                  {['My Orders', 'Wishlist', 'Account Settings'].map(item => (
-                    <button key={item} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
-                      {item}
+                  {navigationList.map(item => (
+                    <button key={item.name} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+                      <Link to={item.href}>{item.name}</Link>
                     </button>
                   ))}
                   <div className="border-t border-gray-100 mt-1">
