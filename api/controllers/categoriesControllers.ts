@@ -24,9 +24,9 @@ class CategoriesControllers {
 		}
 	};
 	registerCategory = async (req: any, res: any) => {
-		const { name, description, thumbnail, seller } = req.body;
+		const { name, description, thumbnail, sellerId, parentCategoryId } = req.body;
 		try {
-			const newCategory = new categoryModel({ name, description, thumbnail });
+			const newCategory = new categoryModel({ name, description, thumbnail, sellerId, parentCategoryId });
 			await newCategory.save();
 			return res.status(201).send(newCategory);
 		} catch (error) {
@@ -36,9 +36,9 @@ class CategoriesControllers {
 	};
 	updateCategory = async (req: any, res: any) => {
 		const { id } = req.params;
-		const { name, description, thumbnail } = req.body;
+		const { name, description, thumbnail, parentCategoryId } = req.body;
 		try {
-			const updatedCategory = await categoryModel.findByIdAndUpdate(id, { name, description, thumbnail }, { new: true });
+			const updatedCategory = await categoryModel.findByIdAndUpdate(id, { name, description, thumbnail, parentCategoryId }, { new: true });
 			if (!updatedCategory) {
 				return res.status(404).send({ error: 'Category not found' });
 			}

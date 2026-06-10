@@ -5,6 +5,7 @@ const categorySchema = new Schema({
 	description: { type: String, required: true },
 	thumbnail: { type: String, default: '' },
 	seller: { type: Schema.Types.ObjectId, ref: 'users', required: true },
+	parentCategoryId: [{ type: Schema.Types.ObjectId, ref: 'categories' }],
 }, { timestamps: true });
 
 export default model('categories', categorySchema);

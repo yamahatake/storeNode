@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import ProductCard from '@/components/ProductCard';
+import ProductCard from '@/components/products/ProductCard';
 import { getProducts } from '@/api/products';
 import type { Product } from '@/types';
 import { createFileRoute, redirect } from '@tanstack/react-router'

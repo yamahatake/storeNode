@@ -1,21 +1,27 @@
 import { useState } from 'react';
-import { createRootRouteWithContext, Link, Outlet } from '@tanstack/react-router';
+import { createRootRouteWithContext, Link, Outlet, useMatches } from '@tanstack/react-router';
 import type { RouterContext } from '@/types';
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+// import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import CartSidebar from '@/components/CartSidebar';
 import ChatWidget from '@/components/ChatWidget';
 import Navbar from '@/components/layout/Navbar';
 
 const Root = () => {
+  const matches = useMatches();
+  const context = matches[matches.length - 1].context;
   const [search, setSearch] = useState('');
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar search={search} onSearch={setSearch} />
+      {context.user && (
+        <>
+          <Navbar search={search} onSearch={setSearch} />
+          <CartSidebar />
+          <ChatWidget />
+        </>
+      )}
       <Outlet />
-      <TanStackRouterDevtools position="bottom-right" initialIsOpen={false} />
-      <CartSidebar />
-      <ChatWidget />
+      {/* <TanStackRouterDevtools position="bottom-right" initialIsOpen={false} /> */}
     </div>
   )
 }

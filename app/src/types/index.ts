@@ -19,6 +19,15 @@ export interface Product {
   inStock: boolean;
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  description?: string;
+  image?: string;
+  sellerId: string;
+  parentCategoryId?: string;
+}
+
 export interface CartItem {
   product: Product;
   quantity: number;
